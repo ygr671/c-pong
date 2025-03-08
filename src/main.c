@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 typedef struct 
 {
     Vector2 position;
@@ -10,34 +11,33 @@ typedef struct
 
 int main(void)
 {
-    int x, y;
     // Game config stuff
-    int resolution_width = 854;
-    int resolution_height = 480;
-
+    int resolutionWidth = 854;
+    int resolutionHeight = 480;
+    Color red = {255, 0, 0, 255};
     // Note : paddle_height is "to the right" and paddle_width is "to the top"
-    size_t paddle_height = 5;
-    size_t paddle_width = 100;
-    size_t paddle_speed = 8;
-
-    int ball_size = 10;
-    int ball_speed = 6;
-    int ball_speed_y = rand() % 6;
-    int paddle_spacement = 20;
+    int paddleX, paddleY;
+    size_t paddleHeight = 5;
+    size_t paddleWidth = 100;
+    size_t paddleSpeed = 8;
+    int ballSize = 10;
+    int ballSpeedX = 6;
+    int ballSpeedY = rand() % 6;
+    int paddleSpacement = 20;
 
     int textWidth = MeasureText("Game over !", 20);
 
-    MovingObject ball = {{resolution_width/2, resolution_height/2}, {-ball_speed, ball_speed_y}, ball_size};
+    MovingObject ball = {{resolutionWidth/2, resolutionHeight/2}, {-ballSpeedX, ballSpeedY}, ballSize};
 
-    Color red = {255, 0, 0, 255}; // {r, g, b, alpha (transparency)}
     
-    // Position at start calculated
-    x = paddle_height + 10;
-    y = resolution_height/2;
+    
+    // Paddle position at the start
+    paddleX = paddleHeight + 10;
+    paddleY = resolutionHeight/2;
 
-    bool close = false;
-    bool game_over = false;
-    InitWindow(resolution_width, resolution_height, "Pong");
+    bool close = false; // Game Loop boolean
+    bool gameOver = false; // Game Over screen boolean
+    InitWindow(resolutionWidth, resolutionHeight, "Pong");
     SetTargetFPS(60);
     
 
@@ -47,16 +47,16 @@ int main(void)
             // Event handler
             if (IsKeyDown(KEY_UP))
             {
-                if (y > 0)
+                if (paddleY > 0)
                 {
-                    y -= paddle_speed;
+                    paddleY -= paddleSpeed;
                 }
             }
             else if (IsKeyDown(KEY_DOWN))
             { 
-                if (y < resolution_height - paddle_width)
+                if (paddleY < resolutionHeight - paddleWidth)
                 {
-                    y += paddle_speed;
+                    paddleY += paddleSpeed;
                 }
             }	
             else if (IsKeyDown(KEY_A))
@@ -64,24 +64,24 @@ int main(void)
                 close = true;
             }
         
-            if (ball.position.x - ball_size < x + paddle_height)
+            if (ball.position.x - ballSize < paddleX + paddleHeight)
             {
-                ball.speed.x = ball_speed;
+                ball.speed.x = ballSpeedX;
                 ball.speed.y = rand() % 6;
-                if (ball.position.y < y || ball.position.y > y + paddle_width) // En dehors du paddle
+                if (ball.position.y < paddleY || ball.position.y > paddleY + paddleWidth) // En dehors du paddle
                 {
-                    game_over = true;
+                    gameOver = true;
                 }
             }
             
 
-            if (ball.position.x - ball_size >= resolution_width-ball_size-paddle_height-paddle_spacement)
+            if (ball.position.x - ballSize >= resolutionWidth-ballSize-paddleHeight-paddleSpacement)
             {
-                ball.speed.x = -ball_speed;
+                ball.speed.x = -ballSpeedX;
             }
 
             // Checking ball collisions
-            if (ball.position.y-ball_size <= 0 || ball.position.y+ball_size >= resolution_height)
+            if (ball.position.y-ballSize <= 0 || ball.position.y+ballSize >= resolutionHeight)
             {
                 ball.speed.y *= -1;
             }
@@ -94,29 +94,29 @@ int main(void)
             // Drawing objects
             BeginDrawing();
             ClearBackground(BLACK);
-            DrawRectangle(x, y, paddle_height, paddle_width, WHITE); // Paddle
+            DrawRectangle(paddleX, paddleY, paddleHeight, paddleWidth, WHITE); // Paddle
             DrawCircle(ball.position.x, ball.position.y, (float)ball.size, red); // Ball
-            DrawRectangle(resolution_width-paddle_spacement, 0, paddle_height, resolution_height, WHITE); // Wall
+            DrawRectangle(resolutionWidth-paddleSpacement, 0, paddleHeight, resolutionHeight, WHITE); // Wall
             EndDrawing();
 
             // Handling game over
-            while (game_over)
+            while (gameOver)
             {
                 BeginDrawing();
                 ClearBackground(BLACK);
-                DrawText("Game over !", (resolution_width - textWidth)/2, (resolution_height - 20)/2, 20, WHITE);
+                DrawText("Game over !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
                 EndDrawing();
                 if (IsKeyDown(KEY_A))
                 {
                     close = false;
-                    game_over = false;
+                    gameOver = false;
                 }
                 else if (IsKeyDown(KEY_R))
                 {
-                    ball.position.x = resolution_width/2;
-                    ball.position.y = resolution_height/2;
-                    ball.speed = (Vector2){-ball_speed, ball_speed_y};
-                    game_over = false;
+                    ball.position.x = resolutionWidth/2;
+                    ball.position.y = resolutionHeight/2;
+                    ball.speed = (Vector2){-ballSpeedX, ballSpeedY};
+                    gameOver = false;
                 }
             }
     }
