@@ -36,7 +36,7 @@ int main(void)
     player2.x = resolutionWidth - 20;
     player2.y = resolutionHeight / 2;
 
-    
+    int loser = 0;
     
     int ballSize = 10;
     int randomBallSpeedX = rand() % 2;
@@ -72,7 +72,7 @@ int main(void)
                     player1.y -= player1.speed;
                 }
             }
-            else if (IsKeyDown(KEY_S))
+            if (IsKeyDown(KEY_S))
             { 
                 if (player1.y < resolutionHeight - player1.width)
                 {
@@ -80,21 +80,21 @@ int main(void)
                 }
             }
             // Player 2 movement
-            else if (IsKeyDown(KEY_UP))
+            if (IsKeyDown(KEY_UP))
             {
                 if (player2.y > 0)
                 {
                     player2.y -= player2.speed;
                 }
             }
-            else if (IsKeyDown(KEY_DOWN))
+            if (IsKeyDown(KEY_DOWN))
             {
                 if (player2.y < resolutionHeight - player2.width)
                 {
                     player2.y += player2.speed;
                 }
             }
-            else if (IsKeyDown(KEY_A))
+            if (IsKeyDown(KEY_A))
             {
                 close = true;
             }
@@ -106,6 +106,7 @@ int main(void)
                 ball.speed.y = rand() % 11 - 6;
                 if (ball.position.y < player1.y || ball.position.y > player1.y + player1.width) // Checking if the ball goes behing the paddle
                 {
+                    loser = 2;
                     gameOver = true;
                 }
             }
@@ -117,6 +118,7 @@ int main(void)
                 ball.speed.y = rand() % 11 - 6;
                 if (ball.position.y < player2.y || ball.position.y > player2.y + player2.width)
                 {
+                    loser = 1;
                     gameOver = true;
                 }
             }
@@ -147,14 +149,21 @@ int main(void)
             {
                 BeginDrawing();
                 ClearBackground(BLACK);
-                DrawText("Game over !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
+                if (loser == 1)
+                {
+                    DrawText("Game over !\nPlayer 1 won !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
+                }
+                else if (loser == 2)
+                {
+                    DrawText("Game over !\nPlayer 2 won !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
+                }
                 EndDrawing();
                 if (IsKeyDown(KEY_A))
                 {
                     close = false;
                     gameOver = false;
                 }
-                else if (IsKeyDown(KEY_R))
+                if (IsKeyDown(KEY_R))
                 {
                     // Resetting players positions
                     ball.position.x = resolutionWidth / 2;
