@@ -40,7 +40,7 @@ int main(void)
     
     int ballSize = 10;
     int randomBallSpeedX = rand() % 2;
-    int ballSpeedX;
+    int ballSpeedX = 6;
     if (randomBallSpeedX == 0)
     {
         ballSpeedX = 6;
@@ -103,7 +103,7 @@ int main(void)
             if (ball.position.x - ballSize < player1.x + player1.height)
             {
                 ball.speed.x = -ball.speed.x;
-                ball.speed.y = rand() % 6;
+                ball.speed.y = rand() % 11 - 6;
                 if (ball.position.y < player1.y || ball.position.y > player1.y + player1.width) // Checking if the ball goes behing the paddle
                 {
                     gameOver = true;
@@ -114,7 +114,7 @@ int main(void)
             if (ball.position.x - ballSize >= resolutionWidth - ballSize - player1.height - 20)
             {
                 ball.speed.x = -ball.speed.x;
-                ball.speed.y = rand() % 6;
+                ball.speed.y = rand() % 11 - 6;
                 if (ball.position.y < player2.y || ball.position.y > player2.y + player2.width)
                 {
                     gameOver = true;
