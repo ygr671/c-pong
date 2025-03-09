@@ -15,7 +15,7 @@ int main(void)
     int resolutionWidth = 854;
     int resolutionHeight = 480;
     Color red = {255, 0, 0, 255};
-    // Note : paddle_height is "to the right" and paddle_width is "to the top"
+    // Note : paddlHeight is paddle's "width" and paddleWidth is the "height"
     int paddleX, paddleY;
     size_t paddleHeight = 5;
     size_t paddleWidth = 100;
@@ -24,7 +24,6 @@ int main(void)
     int ballSpeedX = 6;
     int ballSpeedY = rand() % 6;
     int paddleSpacement = 20;
-
     int textWidth = MeasureText("Game over !", 20);
 
     MovingObject ball = {{resolutionWidth/2, resolutionHeight/2}, {-ballSpeedX, ballSpeedY}, ballSize};
@@ -64,23 +63,25 @@ int main(void)
                 close = true;
             }
         
+            // Checking ball collisions with the paddle
             if (ball.position.x - ballSize < paddleX + paddleHeight)
             {
                 ball.speed.x = ballSpeedX;
                 ball.speed.y = rand() % 6;
-                if (ball.position.y < paddleY || ball.position.y > paddleY + paddleWidth) // En dehors du paddle
+                if (ball.position.y < paddleY || ball.position.y > paddleY + paddleWidth) // Checking if the ball goes behing the paddle
                 {
                     gameOver = true;
                 }
             }
             
 
+            // Checking ball collisions with the wall
             if (ball.position.x - ballSize >= resolutionWidth-ballSize-paddleHeight-paddleSpacement)
             {
                 ball.speed.x = -ballSpeedX;
             }
 
-            // Checking ball collisions
+            // Checking ball collisions with the top and bottom
             if (ball.position.y-ballSize <= 0 || ball.position.y+ballSize >= resolutionHeight)
             {
                 ball.speed.y *= -1;
