@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct 
 {
@@ -20,6 +21,7 @@ typedef struct
 
 int main(void)
 {
+    srand(time(NULL));
     // Game config stuff
     int resolutionWidth = 854;
     int resolutionHeight = 480;
@@ -35,9 +37,18 @@ int main(void)
     player2.y = resolutionHeight / 2;
 
     
-
+    
     int ballSize = 10;
-    int ballSpeedX = 6;
+    int randomBallSpeedX = rand() % 2;
+    int ballSpeedX;
+    if (randomBallSpeedX == 0)
+    {
+        ballSpeedX = 6;
+    }
+    else if (randomBallSpeedX == 1)
+    {
+        ballSpeedX = -6;
+    }
     int ballSpeedY = rand() % 6;
     int textWidth = MeasureText("Game over !", 20);
 
@@ -91,7 +102,7 @@ int main(void)
             // Checking ball collisions with the player 1's paddle
             if (ball.position.x - ballSize < player1.x + player1.height)
             {
-                ball.speed.x = ballSpeedX;
+                ball.speed.x = -ball.speed.x;
                 ball.speed.y = rand() % 6;
                 if (ball.position.y < player1.y || ball.position.y > player1.y + player1.width) // Checking if the ball goes behing the paddle
                 {
@@ -102,7 +113,7 @@ int main(void)
             // Checking ball collisiions with the player 2's paddle
             if (ball.position.x - ballSize >= resolutionWidth - ballSize - player1.height - 20)
             {
-                ball.speed.x = -ballSpeedX;
+                ball.speed.x = -ball.speed.x;
                 ball.speed.y = rand() % 6;
                 if (ball.position.y < player2.y || ball.position.y > player2.y + player2.width)
                 {
