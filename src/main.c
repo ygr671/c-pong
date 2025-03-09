@@ -28,14 +28,16 @@ int main(void)
     Paddle player1 = {100, 5, 8};
     // Paddle position at the start
     player1.x = player1.height + 10;
-    player1.y = resolutionHeight / 2; 
+    player1.y = resolutionHeight / 2;
+
     int ballSize = 10;
     int ballSpeedX = 6;
     int ballSpeedY = rand() % 6;
-    int paddleSpacement = 20;
     int textWidth = MeasureText("Game over !", 20);
 
     MovingObject ball = {{resolutionWidth/2, resolutionHeight/2}, {-ballSpeedX, ballSpeedY}, ballSize};
+
+    int wallSpacement = 20;
 
     bool close = false; // Game Loop boolean
     bool gameOver = false; // Game Over screen boolean
@@ -79,13 +81,13 @@ int main(void)
             
 
             // Checking ball collisions with the wall
-            if (ball.position.x - ballSize >= resolutionWidth-ballSize-player1.height-paddleSpacement)
+            if (ball.position.x - ballSize >= resolutionWidth - ballSize - player1.height - wallSpacement)
             {
                 ball.speed.x = -ballSpeedX;
             }
 
             // Checking ball collisions with the top and bottom
-            if (ball.position.y-ballSize <= 0 || ball.position.y+ballSize >= resolutionHeight)
+            if (ball.position.y - ballSize <= 0 || ball.position.y + ballSize >= resolutionHeight)
             {
                 ball.speed.y *= -1;
             }
@@ -100,7 +102,7 @@ int main(void)
             ClearBackground(BLACK);
             DrawRectangle(player1.x, player1.y, player1.height, player1.width, WHITE); // Paddle
             DrawCircle(ball.position.x, ball.position.y, (float)ball.size, red); // Ball
-            DrawRectangle(resolutionWidth-paddleSpacement, 0, player1.height, resolutionHeight, WHITE); // Wall
+            DrawRectangle(resolutionWidth - wallSpacement, 0, player1.height, resolutionHeight, WHITE); // Wall
             EndDrawing();
             
 
@@ -118,8 +120,8 @@ int main(void)
                 }
                 else if (IsKeyDown(KEY_R))
                 {
-                    ball.position.x = resolutionWidth/2;
-                    ball.position.y = resolutionHeight/2;
+                    ball.position.x = resolutionWidth / 2;
+                    ball.position.y = resolutionHeight / 2;
                     ball.speed = (Vector2){-ballSpeedX, ballSpeedY};
                     gameOver = false;
                 }
