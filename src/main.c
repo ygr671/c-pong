@@ -100,8 +100,6 @@ int main(void)
             }
             
             // Checking ball collisiions with the player 2's paddle
-
-            // Checking ball collisions with the wall
             if (ball.position.x - ballSize >= resolutionWidth - ballSize - player1.height - 20)
             {
                 ball.speed.x = -ballSpeedX;
