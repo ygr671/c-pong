@@ -9,17 +9,26 @@ typedef struct
     int size;
 } MovingObject;
 
+typedef struct
+{
+    size_t width;
+    size_t height;
+    size_t speed;
+    int x;
+    int y;
+}  Paddle;
+
 int main(void)
 {
     // Game config stuff
     int resolutionWidth = 854;
     int resolutionHeight = 480;
     Color red = {255, 0, 0, 255};
-    // Note : paddlHeight is paddle's "width" and paddleWidth is the "height"
-    int paddleX, paddleY;
-    size_t paddleHeight = 5;
-    size_t paddleWidth = 100;
-    size_t paddleSpeed = 8;
+    // Note : player.height is paddle's "width" and player.width is the "height"
+    Paddle player1 = {100, 5, 8};
+    // Paddle position at the start
+    player1.x = player1.height + 10;
+    player1.y = resolutionHeight / 2; 
     int ballSize = 10;
     int ballSpeedX = 6;
     int ballSpeedY = rand() % 6;
@@ -27,12 +36,6 @@ int main(void)
     int textWidth = MeasureText("Game over !", 20);
 
     MovingObject ball = {{resolutionWidth/2, resolutionHeight/2}, {-ballSpeedX, ballSpeedY}, ballSize};
-
-    
-    
-    // Paddle position at the start
-    paddleX = paddleHeight + 10;
-    paddleY = resolutionHeight/2;
 
     bool close = false; // Game Loop boolean
     bool gameOver = false; // Game Over screen boolean
@@ -46,16 +49,16 @@ int main(void)
             // Event handler
             if (IsKeyDown(KEY_UP))
             {
-                if (paddleY > 0)
+                if (player1.y > 0)
                 {
-                    paddleY -= paddleSpeed;
+                    player1.y -= player1.speed;
                 }
             }
             else if (IsKeyDown(KEY_DOWN))
             { 
-                if (paddleY < resolutionHeight - paddleWidth)
+                if (player1.y < resolutionHeight - player1.width)
                 {
-                    paddleY += paddleSpeed;
+                    player1.y += player1.speed;
                 }
             }	
             else if (IsKeyDown(KEY_A))
@@ -64,11 +67,11 @@ int main(void)
             }
         
             // Checking ball collisions with the paddle
-            if (ball.position.x - ballSize < paddleX + paddleHeight)
+            if (ball.position.x - ballSize < player1.x + player1.height)
             {
                 ball.speed.x = ballSpeedX;
                 ball.speed.y = rand() % 6;
-                if (ball.position.y < paddleY || ball.position.y > paddleY + paddleWidth) // Checking if the ball goes behing the paddle
+                if (ball.position.y < player1.y || ball.position.y > player1.y + player1.width) // Checking if the ball goes behing the paddle
                 {
                     gameOver = true;
                 }
@@ -76,7 +79,7 @@ int main(void)
             
 
             // Checking ball collisions with the wall
-            if (ball.position.x - ballSize >= resolutionWidth-ballSize-paddleHeight-paddleSpacement)
+            if (ball.position.x - ballSize >= resolutionWidth-ballSize-player1.height-paddleSpacement)
             {
                 ball.speed.x = -ballSpeedX;
             }
@@ -95,10 +98,11 @@ int main(void)
             // Drawing objects
             BeginDrawing();
             ClearBackground(BLACK);
-            DrawRectangle(paddleX, paddleY, paddleHeight, paddleWidth, WHITE); // Paddle
+            DrawRectangle(player1.x, player1.y, player1.height, player1.width, WHITE); // Paddle
             DrawCircle(ball.position.x, ball.position.y, (float)ball.size, red); // Ball
-            DrawRectangle(resolutionWidth-paddleSpacement, 0, paddleHeight, resolutionHeight, WHITE); // Wall
+            DrawRectangle(resolutionWidth-paddleSpacement, 0, player1.height, resolutionHeight, WHITE); // Wall
             EndDrawing();
+            
 
             // Handling game over
             while (gameOver)
