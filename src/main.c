@@ -63,120 +63,120 @@ int main(void)
     // Game Loop
     while (!close)
     {
-            // Event handler
-            // Player 1 movement
-            if (IsKeyDown(KEY_W))
+        // Event handler
+        // Player 1 movement
+        if (IsKeyDown(KEY_W))
+        {
+            if (player1.y > 0)
             {
-                if (player1.y > 0)
-                {
-                    player1.y -= player1.speed;
-                }
+                player1.y -= player1.speed;
             }
-            if (IsKeyDown(KEY_S))
-            { 
-                if (player1.y < resolutionHeight - player1.width)
-                {
-                    player1.y += player1.speed;
-                }
-            }
-            // Player 2 movement
-            if (IsKeyDown(KEY_UP))
+        }
+        if (IsKeyDown(KEY_S))
+        { 
+            if (player1.y < resolutionHeight - player1.width)
             {
-                if (player2.y > 0)
-                {
-                    player2.y -= player2.speed;
-                }
+                player1.y += player1.speed;
             }
-            if (IsKeyDown(KEY_DOWN))
+        }
+        // Player 2 movement
+        if (IsKeyDown(KEY_UP))
+        {
+            if (player2.y > 0)
             {
-                if (player2.y < resolutionHeight - player2.width)
-                {
-                    player2.y += player2.speed;
-                }
+                player2.y -= player2.speed;
             }
-            if (IsKeyDown(KEY_A))
+        }
+        if (IsKeyDown(KEY_DOWN))
+        {
+            if (player2.y < resolutionHeight - player2.width)
             {
-                close = true;
+                player2.y += player2.speed;
             }
-        
-            // Checking ball collisions with the player 1's paddle
-            if (ball.position.x - ballSize < player1.x + player1.height)
-            {
-                ball.speed.x = -ball.speed.x;
-                ball.speed.y = rand() % 11 - 6;
-                if (ball.position.y < player1.y || ball.position.y > player1.y + player1.width) // Checking if the ball goes behing the paddle
-                {
-                    loser = 2;
-                    gameOver = true;
-                }
-            }
-            
-            // Checking ball collisiions with the player 2's paddle
-            if (ball.position.x - ballSize >= resolutionWidth - ballSize - player1.height - 20)
-            {
-                ball.speed.x = -ball.speed.x;
-                ball.speed.y = rand() % 11 - 6;
-                if (ball.position.y < player2.y || ball.position.y > player2.y + player2.width)
-                {
-                    loser = 1;
-                    gameOver = true;
-                }
-            }
+        }
+        if (IsKeyDown(KEY_A))
+        {
+            close = true;
+        }
 
-            // Checking ball collisions with the top and bottom
-            if (ball.position.y - ballSize <= 0 || ball.position.y + ballSize >= resolutionHeight)
+        // Checking ball collisions with the player 1's paddle
+        if (ball.position.x - ballSize < player1.x + player1.height)
+        {
+            ball.speed.x = -ball.speed.x;
+            ball.speed.y = rand() % 11 - 6;
+            if (ball.position.y < player1.y || ball.position.y > player1.y + player1.width) // Checking if the ball goes behing the paddle
             {
-                ball.speed.y *= -1;
+                loser = 2;
+                gameOver = true;
             }
-
+        }
             
-            ball.position.x += ball.speed.x;
-            ball.position.y += ball.speed.y;
+        // Checking ball collisiions with the player 2's paddle
+        if (ball.position.x - ballSize >= resolutionWidth - ballSize - player1.height - 20)
+        {
+            ball.speed.x = -ball.speed.x;
+            ball.speed.y = rand() % 11 - 6;
+            if (ball.position.y < player2.y || ball.position.y > player2.y + player2.width)
+            {
+                loser = 1;
+                gameOver = true;
+            }
+        }
+
+        // Checking ball collisions with the top and bottom
+        if (ball.position.y - ballSize <= 0 || ball.position.y + ballSize >= resolutionHeight)
+        {
+            ball.speed.y *= -1;
+        }
+           
+        ball.position.x += ball.speed.x;
+        ball.position.y += ball.speed.y;
             
 
-            // Drawing objects
+        // Drawing objects
+        BeginDrawing();
+        ClearBackground(BLACK);
+        DrawRectangle(player1.x, player1.y, player1.height, player1.width, WHITE); // Paddle player1
+        DrawRectangle(player2.x, player2.y, player2.height, player2.width, WHITE); // Paddle player2
+        DrawCircle(ball.position.x, ball.position.y, (float)ball.size, red); // Ball
+        EndDrawing();
+            
+        // Handling game over
+        while (gameOver)
+        {
             BeginDrawing();
             ClearBackground(BLACK);
-            DrawRectangle(player1.x, player1.y, player1.height, player1.width, WHITE); // Paddle player1
-            DrawRectangle(player2.x, player2.y, player2.height, player2.width, WHITE); // Paddle player2
-            DrawCircle(ball.position.x, ball.position.y, (float)ball.size, red); // Ball
-            //DrawRectangle(resolutionWidth - wallSpacement, 0, player1.height, resolutionHeight, WHITE); // Wall
-            EndDrawing();
-            
-
-            // Handling game over
-            while (gameOver)
+            if (loser == 1)
             {
-                BeginDrawing();
-                ClearBackground(BLACK);
-                if (loser == 1)
-                {
-                    DrawText("Game over !\nPlayer 1 won !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
-                }
-                else if (loser == 2)
-                {
-                    DrawText("Game over !\nPlayer 2 won !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
-                }
-                EndDrawing();
-                if (IsKeyDown(KEY_A))
-                {
-                    close = false;
-                    gameOver = false;
-                }
-                if (IsKeyDown(KEY_R))
-                {
-                    // Resetting players positions
-                    ball.position.x = resolutionWidth / 2;
-                    ball.position.y = resolutionHeight / 2;
-                    
-                    player2.x = resolutionWidth - 20;
-                    player2.y = resolutionHeight / 2;
-                    
-                    // Resetting ball speed
-                    ball.speed = (Vector2){-ballSpeedX, ballSpeedY};
-                    gameOver = false;
-                }
+                DrawText("Game over !\nPlayer 1 won !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
             }
+            else if (loser == 2)
+            {
+                DrawText("Game over !\nPlayer 2 won !", (resolutionWidth - textWidth)/2, (resolutionHeight - 20)/2, 20, WHITE);
+            }
+            EndDrawing();
+            if (IsKeyDown(KEY_A))
+            {
+                close = false;
+                gameOver = false;
+            }
+            if (IsKeyDown(KEY_R))
+            {
+                // Resetting players positions
+                ball.position.x = resolutionWidth / 2;
+                ball.position.y = resolutionHeight / 2;
+                    
+                player1.x = player1.height + 10;
+                player1.y = resolutionHeight / 2;
+                
+                player2.x = resolutionWidth - 20;
+                player2.y = resolutionHeight / 2;
+                    
+                // Resetting ball speed
+                ball.speed = (Vector2){-ballSpeedX, ballSpeedY};
+                gameOver = false;
+            }
+        }
     }
     
     CloseWindow();
